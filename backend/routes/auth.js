@@ -18,6 +18,7 @@ body('password').isLength({ min: 5 }),
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+   try {
     const salt=await bcryptjs.genSalt(10);
 const mypass=await bcryptjs.hash(req.body.password, salt);
 let user =await User.findOne({email: req.body.email});
@@ -36,11 +37,11 @@ if (user){
     }
     const authtoken=jwt.sign(data, JSON_SECRET_KEY)
     res.json({authtoken:authtoken})
-    then(user => res.json(user)).catch(err=>{
-      res.json(
-       { error: 'asdasdasd', message: err.message}
-      )
-    });
+   } catch (error) {
+    res.json(
+      { error: 'asdasdasd', message: err.message}
+     )
+   } 
     }
 )
 router.post( '/login',[
